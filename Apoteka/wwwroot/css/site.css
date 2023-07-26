@@ -1,0 +1,118 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    font-family: 'Poppins', sans-serif !important;
+}
+
+.mojeDugme:hover {
+    background-color: #adb5bd !important;
+    
+}
+.okvir {
+    border: 2px solid #000000;
+    border-start-start-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+.imeProizvoda{
+    font-size: 18px;
+    font-weight: 400;
+}
+#listaProizvoda {
+    color: #495057
+}
+.kategorija-1 {
+    background-color: #cfe2ff;
+    color: #052c65 !important;
+    border: 1px solid #9ec5fe !important;
+}
+
+.kategorija-2 {
+    background-color: #d1e7dd;
+    color: #052c65 !important;
+    border: 1px solid #a3cfbb !important;
+}
+
+.kategorija-3 {
+    background-color: #f8d7da;
+    color: #052c65 !important;
+    border: 1px solid #f1aeb5 !important;
+}
+.kategorija-4 {
+    background-color: #fff3cd;
+    color: #052c65 !important;
+    border: 1px solid #ffe69c !important;
+}
+.kategorija-5 {
+    background-color: #cff4fc;
+    color: #052c65 !important;
+    border: 1px solid #9eeaf9 !important;
+}
+
+.disabled-div {
+    pointer-events: none;
+    opacity: 0.6;
+    background-color: gray;
+}
+
+.custom-container .top-sold-products {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.custom-container .top-sold-products .product-item {
+    border: 2px dashed #cfe2ff;
+    text-align: center;
+    margin: 20px 33px 10px 33px;
+    background-color: #f7f7f7;
+    /*color: #f8f9fa;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.odd .sorting_1 {
+    /*background-color: #f29879;
+    color: #f8f9fa;*/
+}
+
+.odd .text-right {
+    /*background-color: #f29879;
+    color: #f8f9fa;*/
+}
+
+.even .sorting_1 {
+    background-color: #cfe2ff;
+    /*color: #f8f9fa;*/
+}
+
+.even .text-right {
+    background-color: #cfe2ff;
+    /*color: #f8f9fa;*/
+}
+.form-group{
+    margin: 0px 0px 20px 0px
+}
+
+
+
+
+

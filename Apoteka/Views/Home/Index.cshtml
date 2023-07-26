@@ -1,0 +1,225 @@
+﻿@using System.Globalization;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="custom-container mt-4">
+    <h3 class="text-center">Najprodavaniji proizvodi za trenutni mjesec:</h3>
+    <div id="topSoldProducts" class="row top-sold-products">
+        <!-- Ovdje će se dinamički generisati najprodavaniji proizvodi -->
+    </div>
+</div>
+
+<div class="container mt-4">
+    <h3 class="text-center">Prodani proizvodi</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="monthSelect">Izaberi mjesec:</label>
+                <select id="monthSelect" class="form-control">
+                    @for (var month = 1; month <= 12; month++)
+                    {
+                        <option value="@month">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month)</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="dateSelect">Izaberi datum:</label>
+                <input type="text" id="dateSelect" class="form-control">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="categorySelect">Izaberi kategoriju:</label>
+    
+    <select id="categorySelect" class="form-control">
+        <option value="0s">Svi proizvodi</option>
+        @foreach (var category in ViewBag.Categories)
+        {
+            <option value="@category.Categoryid">@category.Name</option>
+        }
+    </select>
+    </div>
+    <div class="row">
+            
+        <div class="col-md-6 col-sm-6">
+            <table id="soldProductsTableMonth" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Naziv</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="col-md-6 col-sm-6">
+            <table id="soldProductsTableDay" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Naziv</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+@section Scripts {
+    <script>
+            var selectedDate = new Date();
+            var selectedCategory = 0;
+            document.getElementById('dateSelect').value = selectedDate.toLocaleDateString();
+
+        $("#dateSelect").datepicker();
+
+                function getSoldProductQuantitiesByDay(date, categoryId) {
+            var formattedDate = date.toLocaleDateString();
+            console.log("Usli smo u funkciju" + formattedDate)
+            //var date = $("#dateSelect").datepicker();
+            $('#soldProductsTableDay').DataTable(
+                {
+                    "responsive": true,
+                    "bRetrieve": true,
+                    "serverSide": true,
+                    "bAutoWidth": true,
+                    "ordering": true,
+                    "bDestroy": true,
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/sr-SP.json'
+                    },
+                    "ajax": {
+                        "url": "/Home/GetSoldProductQuantitiesByDay",
+                        "type": "POST",
+                        "data": { date: formattedDate, categoryId: categoryId },
+                        "datatype": "json"
+                    },
+                    "columnDefs":
+                        [{
+                            "targets": [0, 1],
+                            "visible": true,
+                            "searchable": true
+                        },
+                        {
+                            "className": 'text-right',
+                            "targets": [1]
+                        }],
+                    "columns": [
+                        { "data": "naziv", "name": "naziv" },
+                        { "data": "quantity", "name": "quantity" },
+                    ]
+                })
+        }
+
+
+        function getSoldProductQuantitiesByMonth(month) {
+            $('#soldProductsTableMonth').DataTable(
+                {
+                    "responsive": true,
+                    "bRetrieve": true,
+                    "serverSide": true,
+                    "bAutoWidth": true,
+                    "ordering": true,
+                    "bDestroy": true,
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/sr-SP.json'
+                    },
+                    "ajax": {
+                        "url": "/Home/GetSoldProductQuantitiesByMonth",
+                        "type": "POST",
+                        "data": { month: month },
+                        "datatype": "json"
+                    },
+                    "columnDefs":
+                        [{
+                            "targets": [0, 1],
+                            "visible": true,
+                            "searchable": true
+                        },
+                        {
+                            "className": 'text-right',
+                            "targets": [1]
+                        }],
+                    "columns": [
+                        { "data": "naziv", "name": "naziv" },
+                        { "data": "quantity", "name": "quantity" },
+                    ]
+                })
+        }
+
+        $(document).ready(function () {
+
+                var currentMonth = new Date().getMonth() + 1;
+                loadTopSoldProducts(currentMonth);
+
+            var categorySelect = $("#categorySelect");
+            categorySelect.change(function () {
+                var selectedCategory = categorySelect.val();
+                var currentDate = new Date().toISOString().split('T')[0];
+                getSoldProductQuantitiesByDay(new Date(currentDate), selectedCategory);
+            });
+
+            var currentMonth = new Date().getMonth() + 1;
+            getSoldProductQuantitiesByMonth(currentMonth);
+
+            var currentDay = new Date();
+            console.log(currentDay)
+                getSoldProductQuantitiesByDay(currentDay, selectedCategory);
+        });
+
+        function loadTopSoldProducts(month) {
+            $.ajax({
+                "url": '/Home/GetTopSoldProductsByMonth',
+                "type": 'GET',
+                "data": {month:month},
+                "dataType": "json",
+                "success": function (data) {
+                    console.log("DATA " + data)
+                    var products = data;
+                    var container = $('#topSoldProducts');
+
+                    container.empty();
+
+                    $.each(products, function (index, product) {
+                        var div = $('<div>').addClass('product-item col-md-2');
+                        var h4 = $('<h4>').text(product.naziv);
+
+                        div.append(h4);
+                        container.append(div);
+                    });
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Error: ' + errorThrown);
+                }
+            });
+        }
+
+        $("#monthSelect").change(function () {
+            $('#soldProductsTableMonth').DataTable().destroy();
+            console.log("Tu smooo");
+            var month = $(this).val();
+            loadTopSoldProducts(month);
+            //var tbody = $("#soldProductsTable tbody");
+            //tbody.empty();
+            getSoldProductQuantitiesByMonth(month);
+            console.log(month);
+        })
+
+        $("#dateSelect").on("change", function () {
+            $('#soldProductsTableDay').DataTable().destroy();
+            selectedDate = $(this).datepicker("getDate");
+            getSoldProductQuantitiesByDay(selectedDate, selectedCategory);
+            console.log("U date selectu izabrana kategorija "  + selectedCategory)
+        });
+
+       $("#categorySelect").on("change", function () {
+            $('#soldProductsTableDay').DataTable().destroy();
+            selectedCategory = $(this).val();
+            getSoldProductQuantitiesByDay(selectedDate, selectedCategory);
+        });
+    </script>
+}
+

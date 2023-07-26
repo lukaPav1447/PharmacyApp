@@ -1,0 +1,420 @@
+﻿@model IEnumerable<Apoteka.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="mt-2 mb-2">Products</h1>
+
+<p>
+    @*<a asp-action="create" class="btn btn-sm btn-success ml-1"><i class="fa-solid fa-plus"></i> Create New</a>*@
+    <a asp-action="Create" id="dodajProizvod " class="btn btn-sm btn-success ml-1" data-bs-toggle="modal" data-bs-target="#createProductModal"><i class="fa-solid fa-plus"></i> Create New</a>
+</p>
+
+
+
+
+<table class="table1 table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Baseprice)*@ Base Price
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Recipetype)*@ Recipe Type
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Baseprice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Recipetype.Name)
+                </td>
+                <td class="col-3 text-center">
+                    <div>
+                        <a asp-action="Edit" id="editujProizvod " class="btn btn-sm btn-primary ml-1" data-productid="@Html.DisplayFor(modelItem => item.Productid)" data-name="@Html.DisplayFor(modelItem => item.Name)"
+                           data-description="@Html.DisplayFor(modelItem => item.Description)" data-baseprice="@Html.DisplayFor(modelItem => item.Baseprice)" data-quantity="@Html.DisplayFor(modelItem => item.Quantity)"
+                           data-categoryid="@Html.DisplayFor(modelItem => item.Category.Categoryid)" data-recipeid="@Html.DisplayFor(modelItem => item.Recipetype.Recipetypeid)" data-bs-toggle="modal" data-bs-target="#editProductModal"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a asp-action="Details" asp-route-id="@item.Productid" class="btn btn-sm btn-info"><i class="fa-solid fa-info"></i></a>
+                        <a class="btn btn-sm btn-danger ml-1 delete-btn" data-productid="@Html.DisplayFor(modelItem => item.Productid)" data-bs-toggle="modal" data-bs-target="#deleteProductModal"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- Create Modal -->
+<div class="modal fade" id="createProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="createProductForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodaj proizvod</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+                                <label for="Name" class="control-label">Name</label>
+                                <input type="text" class="form-control" id="createName" name="Name" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="Description" class="control-label">Description</label>
+                                <input type="text" class="form-control" id="createDescription" name="Description" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="Baseprice" class="control-label">Baseprice</label>
+                                <input type="text" class="form-control" id="createBaseprice" name="Baseprice" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="Quantity" class="control-label">Quantity</label>
+                                <input type="number" class="form-control" id="createQuantity" name="Quantity" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="Categoryid" class="control-label" data-i18n="guest">Kategorija</label>
+                                <select class="form-control mb-1" name="Categoryid" id="createCategory">
+                                    <option value="0" id="optCategory">Izaberi kategoriju</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="Recipetypeid" class="control-label" data-i18n="room">Recept</label>
+                                <select class="form-control" name="Recipetypeid" id="createRecipetypeid">
+                                    <option value="0">Izaberi recept</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Odustani</button>
+                    <button type="submit" id="sacuvaj" class="btn btn-primary">Sacuvaj</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="editProductForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Izmijeni proizvod</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+                                <label for="Name" class="control-label">Name</label>
+                                <input type="text" class="form-control" id="editName" name="Name" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="Description" class="control-label">Description</label>
+                                <input type="text" class="form-control" id="editDescription" name="Description" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="Baseprice" class="control-label">Baseprice</label>
+                                <input type="text" class="form-control" id="editBaseprice" name="Baseprice" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="Quantity" class="control-label">Quantity</label>
+                                <input type="number" class="form-control" id="editQuantity" name="Quantity" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="Categoryid" class="control-label" data-i18n="guest">Kategorija</label>
+                                <select class="form-control mb-1" name="Categoryid" id="editCategory">
+                                    <option value=" " id="optCategory">Izaberi kategoriju</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="Recipetypeid" class="control-label" data-i18n="room">Recept</label>
+                                <select class="form-control" name="Recipetypeid" id="editRecipetypeid">
+                                    <option value="0">Izaberi recept</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Odustani</button>
+                    <button type="submit" id="izmijeni" class="btn btn-primary">Izmijeni</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="deleteProductForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Brisanje proizvoda</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Da li ste sigurni da zelite da obrisete ovaj proizvod?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" id="deleteProductBtn" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            var productId;
+            var productIdForDelete; 
+
+            
+            $('.delete-btn').on('click', function () {
+                productIdForDelete = $(this).data('productid'); 
+            });
+
+            $('#deleteProductForm').submit(function (e) {
+                e.preventDefault();
+
+                // Perform the AJAX delete request using the productIdForDelete
+                $.ajax({
+                    type: "DELETE",
+                    url: '@Url.Action("DeleteConfirmed", "ProductTest")' + '/' + productIdForDelete,
+                    success: function (result) {
+                        $('#deleteProductModal').modal('toggle');
+                        location.reload();
+                        // Optionally, you can reload the page or update the table here
+                        // to reflect the changes after deletion.
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+
+            $('#createProductForm').submit(function (e) {
+                e.preventDefault();
+                if (this.checkValidity()) {
+
+                    var data = new FormData();
+
+                    data.append("Name", $('#createName').val());
+                    data.append("Description", $('#createDescription').val());
+                    data.append("Baseprice", $('#createBaseprice').val());
+                    data.append("Quantity", $('#createQuantity').val());
+                    data.append("Categoryid", $('#createCategory').val());
+                    data.append("Recipetypeid", $('#createRecipetypeid').val());
+
+
+                    $.ajax({
+                        //dataType: "JSON",
+                        //contentType: "application/json",
+
+                        processData: false,
+                        contentType: false,
+                        type: "POST",
+                        data: data,
+                        url: '@Url.Action("Create", "ProductTest")',
+                        success: function (result) {
+                            $('#createProductModal').modal('toggle');
+                            location.reload();
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(xhr.responseText);
+                        }
+                    })
+                }
+                else {
+                    this.reportValidity();
+                }
+            })
+
+            $('#editProductForm').submit(function (e) {
+                e.preventDefault();
+                if (this.checkValidity()) {
+
+                    var data = new FormData();
+
+                    console.log(productId)
+
+                    data.append("Productid", productId)
+                    data.append("Name", $('#editName').val());
+                    data.append("Description", $('#editDescription').val());
+                    data.append("Baseprice", $('#editBaseprice').val());
+                    data.append("Quantity", $('#editQuantity').val());
+                    data.append("Categoryid", $('#editCategory').val());
+                    data.append("Recipetypeid", $('#editRecipetypeid').val());
+
+
+                    $.ajax({
+                        //dataType: "JSON",
+                        //contentType: "application/json",
+
+                        processData: false,
+                        contentType: false,
+                        type: "PUT",
+                        data: data,
+                        url: '@Url.Action("Edit", "ProductTest")' + '/' + productId,
+                        success: function (result) {
+                            $('#editProductModal').modal('toggle');
+                            location.reload();
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(xhr.responseText);
+                        }
+                    })
+                }
+                else {
+                    this.reportValidity();
+                }
+            })
+
+            var categoriesFetched = false;
+            var recipeTypesFetched = false;
+
+            if (!categoriesFetched) {
+                $.ajax({
+                    dataType: "JSON",
+                    type: "GET",
+                    url: '@Url.Action("getAllCategories", "Categorie")',
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $('#editCategory').append('<option value="' + value.categoryid + '">' + value.name + '</option>');
+                        });
+                        categoriesFetched = true;
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Error fetching categories");
+                    }
+                });
+            }
+
+            if (!recipeTypesFetched) {
+                $.ajax({
+                    dataType: "JSON",
+                    type: "GET",
+                    url: '@Url.Action("getAllRecipes", "Recipetype")',
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $('#editRecipetypeid').append('<option value="' + value.recipetypeid + '">' + value.name + '</option>');
+                        });
+                        recipeTypesFetched = true;
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Error fetching recipe types");
+                    }
+                });
+            }
+
+            $('#editProductModal').on('show.bs.modal', function (event) {
+                var btn = $(event.relatedTarget); // Button that triggered the modal
+
+                productId = btn.data('productid');
+                var name = btn.data('name');
+                var description = btn.data('description');
+                var baseprice = btn.data('baseprice');
+                var quantity = btn.data('quantity');
+                var categoryId = btn.data('categoryid'); // Use camelCase here
+                var recipeId = btn.data('recipeid'); // Use camelCase here
+
+                var modal = $(this);
+                modal.find('#editName').val(name);
+                modal.find('#editDescription').val(description);
+                modal.find('#editBaseprice').val(baseprice);
+                modal.find('#editQuantity').val(quantity);
+                modal.find('#editCategory').val(categoryId);
+                modal.find('#editRecipetypeid').val(recipeId);
+
+            });
+
+
+
+
+            //dodavanje gostiju na click
+
+        })
+
+        $('#createCategory').on('click', function () {
+            if ($('#createCategory option').length === 1) {
+                $.ajax({
+                    dataType: "JSON",
+                    type: "GET",
+                    url: '@Url.Action("getAllCategories", "Categorie")',
+                    success: function (data) {
+                        console.log(data);
+                        $.each(data, function (key, value) {
+                            $('#createCategory').append('<option value="' + value.categoryid + '">' + value.name + '</option>');
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("U erroru smo");
+                    }
+                });
+            }
+
+        });
+
+        $('#createRecipetypeid').on('click', function () {
+            if ($('#createRecipetypeid option').length === 1) {
+                $.ajax({
+                    dataType: "JSON",
+                    type: "GET",
+                    url: '@Url.Action("getAllRecipes", "Recipetype")',
+                    success: function (data) {
+                        console.log(data);
+                        $.each(data, function (key, value) {
+                            $('#createRecipetypeid').append('<option value="' + value.recipetypeid + '">' + value.name + '</option>')
+                        })
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("U erroru smo");
+                    }
+                });
+            }
+        });
+
+
+    </script>
+
+}

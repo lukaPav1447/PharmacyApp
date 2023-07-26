@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Apoteka.Models.Order>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="mt-2 mb-2">Order</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm btn-success ml-1"><i class="fa-solid fa-plus"></i> Create New</a>
+</p>
+<table class="table1 table">
+    <thead>
+        <tr>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Orderdate)*@ Order Date
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Totalamount)*@ Total Amount
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.Orderdate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Totalamount)
+            </td>
+                <td class="text-center">
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@item.Orderid" class="btn btn-sm btn-primary ml-1"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a asp-action="Details" asp-route-id="@item.Orderid" class="btn btn-sm btn-info"><i class="fa-solid fa-info"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Orderid" class="btn btn-sm btn-danger ml-1"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                    
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

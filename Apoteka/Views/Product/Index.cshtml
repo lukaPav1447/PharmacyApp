@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Apoteka.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+
+    Pager pager = new Pager();
+
+    int pageNo = 0;
+
+    if(ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+
+<h1>Products</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm btn-success ml-1"><i class="fa-solid fa-plus"></i> Create New</a>
+</p>
+
+<partial name="_pager" model="@pager" />
+
+<table class="table1 table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Baseprice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recipetype)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Baseprice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Recipetype.Name)
+            </td>
+            <td>
+                @*<a asp-action="Edit" asp-route-id="@item.Productid">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Productid">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Productid">Delete</a>*@
+                <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@item.Productid" class="btn btn-sm btn-primary ml-1"><i class="fa-solid fa-pen-to-square"></i></a> &nbsp
+                        <a asp-action="Details" asp-route-id="@item.Productid" class="btn btn-sm btn-info"><i class="fa-solid fa-info"></i></a> &nbsp
+                        <a asp-action="Delete" asp-route-id="@item.Productid" class="btn btn-sm btn-danger ml-1"><i class="fa-solid fa-trash"></i></a>&nbsp
+                </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
